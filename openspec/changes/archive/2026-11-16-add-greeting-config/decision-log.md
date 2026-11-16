@@ -21,18 +21,6 @@
 - What breaks if wrong: callers relying on coercion of non-string greetings now receive errors. Misspelled greeting fields continue to default, because missing-field rejection was not requested by the proposed validation or approved definition.
 - Decision pending from the user: none; no approved requirement changed.
 
-## D-04: PR comments: preserve the approved JSON fallback
-
-- Step: address PR #6 comments after CI reported passing test and CodeRabbit checks.
-- Question: may a missing `greet.json` trigger a `greet.yaml` fallback in this fix round?
-- Requirement: "Default greeting without the file" requires `Hello, <name>!` when `greet.json` does not exist; the design reads only `greet.json` and returns `undefined` if missing. The current workflow prohibits approved behavior, design, and scope changes.
-- Decision: preserve JSON-only loading and leave the YAML request unresolved. Add only the requested explanatory error-handling comment; it changes no behavior. Record the YAML request separately in dispute-log.md.
-- Alternatives: introduce YAML support now, or silently ignore the request. The former changes the approved missing-file behavior and adds a format; the latter does not address the reviewer.
-- Rationale: a directory with no JSON but a YAML custom greeting must still receive Hello under the current approved requirement. YAML support requires an accepted revision through planning or acceptance, not a review-only exception.
-- Saved evidence: `evidence/pr-review-threads.json` records the live PR comments and head; the approved archived design and greeting-config spec provide the requirement basis.
-- What breaks if wrong: YAML-only users continue to receive Hello rather than their YAML greeting; implementing YAML now would break the approved missing-JSON contract.
-- Decision pending from the user: whether to approve a revised config-format requirement and design through the acceptance or planning workflow. Until then, build the current requirement as written.
-
 ## D-03: Before-pr R2: present config failures as CLI diagnostics
 
 - Step: resolve R2 in current review cycle 0.
@@ -44,3 +32,15 @@
 - Saved verification: evidence/review-R2-cli-unit.log, six passing in-process unit tests covering success, malformed JSON, invalid config shape/type, filesystem errors, and usage failure. evidence/review-R2-cli-unit-initial-failure.log records the initial missing EISDIR path and unsupported test matcher, both corrected before the passing run.
 - What breaks if wrong: consumers parsing raw CLI stack traces now receive a concise message; importing cli.ts no longer executes the CLI. Direct executable invocation retains the same success/usage contract. Process-level INT-001 remains not verified after the changes because this review round forbids integration runs.
 - Decision pending from the user: none; no approved requirement changed.
+
+## D-04: PR comments: preserve the approved JSON fallback
+
+- Step: address PR #6 comments after CI reported passing test and CodeRabbit checks.
+- Question: may a missing `greet.json` trigger a `greet.yaml` fallback in this fix round?
+- Requirement: "Default greeting without the file" requires `Hello, <name>!` when `greet.json` does not exist; the design reads only `greet.json` and returns `undefined` if missing. The current workflow prohibits approved behavior, design, and scope changes.
+- Decision: preserve JSON-only loading and leave the YAML request unresolved. Add only the requested explanatory error-handling comment; it changes no behavior. Record the YAML request separately in dispute-log.md.
+- Alternatives: introduce YAML support now, or silently ignore the request. The former changes the approved missing-file behavior and adds a format; the latter does not address the reviewer.
+- Rationale: a directory with no JSON but a YAML custom greeting must still receive Hello under the current approved requirement. YAML support requires an accepted revision through planning or acceptance, not a review-only exception.
+- Saved evidence: `evidence/pr-review-threads.json` records the live PR comments and head; the approved archived design and greeting-config spec provide the requirement basis.
+- What breaks if wrong: YAML-only users continue to receive Hello rather than their YAML greeting; implementing YAML now would break the approved missing-JSON contract.
+- Decision pending from the user: whether to approve a revised config-format requirement and design through the acceptance or planning workflow. Until then, build the current requirement as written.
