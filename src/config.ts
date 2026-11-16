@@ -9,5 +9,9 @@ export function readGreeting(dir: string): string | undefined {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
     throw error;
   }
-  return JSON.parse(contents).greeting;
+  const config: unknown = JSON.parse(contents);
+  return config !== null && typeof config === 'object'
+    && 'greeting' in config && typeof config.greeting === 'string'
+    ? config.greeting
+    : undefined;
 }

@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, expect, test } from 'bun:test';
-import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -25,4 +25,33 @@ test('INT-001: default greeting without a config file', () => {
   expect(result.stdout.toString()).toBe('Hello, Ada!\n');
   expect(result.stderr.toString()).toBe('');
   expect(result.exitCode).toBe(0);
+});
+
+test.each([
+  { label: 'missing greeting', value: {} },
+  { label: 'numeric greeting', value: { greeting: 5 } },
+  { label: 'null greeting', value: { greeting: null } },
+  { label: 'top-level null', value: null },
+])('CLI defaults to Hello for $label', ({ value }) => {
+  writeFileSync(join(dir, 'greet.json'), JSON.stringify(value));
+  const result = Bun.spawnSync([process.execPath, cli, 'Ada'], { cwd: dir });
+  expect(result.stdout.toString()).toBe('Hello, Ada!\n');
+  expect(result.stderr.toString()).toBe('');
+  expect(result.exitCode).toBe(0);
+});
+
+test('CLI reports invalid JSON and exits with failure', () => {
+  writeFileSync(join(dir, 'greet.json'), '{');
+  const result = Bun.spawnSync([process.execPath, cli, 'Ada'], { cwd: dir });
+  expect(result.stdout.toString()).toBe('');
+  expect(result.stderr.toString()).toContain('SyntaxError');
+  expect(result.exitCode).toBe(1);
+});
+
+test('CLI reports filesystem errors and exits with failure', () => {
+  mkdirSync(join(dir, 'greet.json'));
+  const result = Bun.spawnSync([process.execPath, cli, 'Ada'], { cwd: dir });
+  expect(result.stdout.toString()).toBe('');
+  expect(result.stderr.toString()).toContain('EISDIR');
+  expect(result.exitCode).toBe(1);
 });
