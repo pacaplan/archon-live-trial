@@ -42,7 +42,7 @@ test.each([null, 5, {}, [], false].map((greeting) => [greeting]))(
   },
 );
 
-test('reports malformed JSON with the config path and original cause', () => {
+test('reports malformed JSON with the config path, reason, and original cause', () => {
   writeFileSync(join(dir, 'greet.json'), '{');
   let thrown: unknown;
   try {
@@ -50,13 +50,14 @@ test('reports malformed JSON with the config path and original cause', () => {
   } catch (error) {
     thrown = error;
   }
+  expect((thrown as Error).message).toContain(((thrown as Error).cause as Error).message);
   expect(thrown).toMatchObject({
-    message: `Invalid JSON in ${join(dir, 'greet.json')}`,
+    message: expect.stringContaining(`Invalid JSON in ${join(dir, 'greet.json')}: `),
     cause: expect.any(SyntaxError),
   });
 });
 
-test('reports read errors with the config path and original cause', () => {
+test('reports read errors with the config path, reason, and original cause', () => {
   mkdirSync(join(dir, 'greet.json'));
   let thrown: unknown;
   try {
@@ -64,8 +65,10 @@ test('reports read errors with the config path and original cause', () => {
   } catch (error) {
     thrown = error;
   }
+  expect((thrown as Error).message).toContain(((thrown as Error).cause as Error).message);
+  expect((thrown as Error).message).toContain('EISDIR');
   expect(thrown).toMatchObject({
-    message: `Failed to read ${join(dir, 'greet.json')}`,
+    message: expect.stringContaining(`Failed to read ${join(dir, 'greet.json')}: `),
     cause: expect.objectContaining({ code: 'EISDIR' }),
   });
 });
