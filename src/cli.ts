@@ -7,4 +7,10 @@ if (!name) {
   console.error('usage: greet <name>');
   process.exit(1);
 }
-console.log(greet(name, readGreeting(process.cwd())));
+try {
+  console.log(greet(name, readGreeting(process.cwd())));
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  console.error(message.replace(/[\r\n]+/g, ' '));
+  process.exit(1);
+}

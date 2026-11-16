@@ -8,9 +8,14 @@ export function readGreeting(dir: string): string | undefined {
     contents = readFileSync(file, 'utf8');
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
-    throw error;
+    throw new Error(`Failed to read ${file}`, { cause: error });
   }
-  const parsed: unknown = JSON.parse(contents);
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(contents);
+  } catch (error) {
+    throw new Error(`Invalid JSON in ${file}`, { cause: error });
+  }
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
     throw new Error(`${file}: expected a JSON object`);
   }

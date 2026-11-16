@@ -42,12 +42,30 @@ test.each([null, 5, {}, [], false].map((greeting) => [greeting]))(
   },
 );
 
-test('propagates malformed JSON', () => {
+test('reports malformed JSON with the config path and original cause', () => {
   writeFileSync(join(dir, 'greet.json'), '{');
-  expect(() => readGreeting(dir)).toThrow(SyntaxError);
+  let thrown: unknown;
+  try {
+    readGreeting(dir);
+  } catch (error) {
+    thrown = error;
+  }
+  expect(thrown).toMatchObject({
+    message: `Invalid JSON in ${join(dir, 'greet.json')}`,
+    cause: expect.any(SyntaxError),
+  });
 });
 
-test('propagates read errors other than a missing file', () => {
+test('reports read errors with the config path and original cause', () => {
   mkdirSync(join(dir, 'greet.json'));
-  expect(() => readGreeting(dir)).toThrow();
+  let thrown: unknown;
+  try {
+    readGreeting(dir);
+  } catch (error) {
+    thrown = error;
+  }
+  expect(thrown).toMatchObject({
+    message: `Failed to read ${join(dir, 'greet.json')}`,
+    cause: expect.objectContaining({ code: 'EISDIR' }),
+  });
 });
