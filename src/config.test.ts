@@ -23,6 +23,25 @@ test('returns undefined when greet.json is absent', () => {
   expect(readGreeting(dir)).toBeUndefined();
 });
 
+test('returns undefined when the greeting field is absent', () => {
+  writeFileSync(join(dir, 'greet.json'), '{}');
+  expect(readGreeting(dir)).toBeUndefined();
+});
+
+test.each(['null', '[]', '5', '"Hi"', 'true'])(
+  'rejects a non-object config: %s', (contents) => {
+    writeFileSync(join(dir, 'greet.json'), contents);
+    expect(() => readGreeting(dir)).toThrow(`${join(dir, 'greet.json')}: expected a JSON object`);
+  },
+);
+
+test.each([null, 5, {}, [], false].map((greeting) => [greeting]))(
+  'rejects a non-string greeting: %j', (greeting) => {
+    writeFileSync(join(dir, 'greet.json'), JSON.stringify({ greeting }));
+    expect(() => readGreeting(dir)).toThrow(`${join(dir, 'greet.json')}: "greeting" must be a string`);
+  },
+);
+
 test('propagates malformed JSON', () => {
   writeFileSync(join(dir, 'greet.json'), '{');
   expect(() => readGreeting(dir)).toThrow(SyntaxError);
