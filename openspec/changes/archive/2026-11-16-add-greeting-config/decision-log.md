@@ -63,3 +63,14 @@
 - Rationale: make the reason visible to all callers at the error-wrapping boundary without duplicate cause handling. Saved passing unit output: `evidence/R3-config-unit-final.txt`; initial assertion-order failure retained in `evidence/R3-config-unit.txt`.
 - What breaks if wrong: consumers matching exact wrapper messages now see additional underlying details. Original causes are unchanged.
 - Decision pending from user: none. I-4/I-5 remain not verified because their planned integration checks are prohibited; see `evidence/review-cli-not-rerun.txt`.
+
+## D-07: PR comment: preserve JSON-only missing-file behavior
+
+- Step: handle PR #5 comments.
+- Question: add YAML fallback when greet.json is missing, as requested by pacaplan at src/config.ts line 15?
+- Requirement: approved spec “Default greeting without the file” requires Hello when greet.json is absent; design reads only <dir>/greet.json. The current workflow prohibits changes to approved behavior/design/scope.
+- Decision: do not implement YAML fallback. Record dispute 1, reply with the requirement conflict, and leave the thread unresolved for acceptance or planning. Implement only the separate explanatory-comment request at line 10.
+- Alternatives: silently expand supported formats and alter missing-JSON behavior; or obtain a revised approved definition through the designated workflow.
+- Rationale: the JSON-absent/YAML-present scenario would produce different output under the proposed feature. Saved scope inspection: `evidence/PR-yaml-scope.txt` in the run artifacts.
+- What breaks if wrong: users expecting the requested YAML support still receive the approved Hello greeting until a revised change is approved and implemented.
+- Decision pending from user: acceptance or planning must decide whether to add YAML, including precedence, supported structure, parsing/error policy, and the revised missing-JSON requirement. Finalization cannot continue with this request unresolved.

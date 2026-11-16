@@ -7,6 +7,7 @@ export function readGreeting(dir: string): string | undefined {
   try {
     contents = readFileSync(file, 'utf8');
   } catch (error) {
+    // Only a missing greet.json falls back to the default greeting; every other error surfaces.
     if ((error as NodeJS.ErrnoException).code === 'ENOENT') return undefined;
     throw new Error(`Failed to read ${file}: ${String(error)}`, { cause: error });
   }
