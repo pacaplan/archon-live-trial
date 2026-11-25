@@ -74,3 +74,23 @@
 - Rationale — `accept-1-round-1-artifact-path.log` confirms that the supplied directory still resolves under `/private/tmp` and records the report heading and missing status. Those observations do not establish what the round 1 tester did.
 - What breaks if this is wrong — Treating the round 0 report as a current result can hide a round 1 finding. Retrying the same path leaves the known preparation failure in place.
 - User decision pending — The workflow owner must bind a compliant artifact root and rerun independent acceptance.
+
+## DECIDE-8: Default when a config object has no greeting field
+
+- Step — Review round 2, applying the answer to DECIDE-2.
+- Decision — Use `Hello` when a JSON object omits `greeting`. This supersedes the missing-field decision in DECIDE-2 and DECIDE-3.
+- Rationale — The reviewer selected `default-missing-field`. The approved scenarios still govern a missing file and a string greeting. The approved definition leaves the omitted-field case open.
+- Boundary — A present non-string greeting, an array or other non-object root, malformed JSON, and read errors other than a missing file continue to fail.
+- Evidence — `review-round-2-config-unit.log` and `review-round-2-cli-missing-field.log`.
+
+## DECIDE-9: Reconcile the older greeting requirement in a follow-up
+
+- Step — Review round 2, applying the answer to DECIDE-1.
+- Decision — Carry the older greeting spec clarification into a follow-up. It should limit the older Hello requirement to when no greeting is supplied by config.
+- Rationale — The selected `update-older-spec` option specifies a follow-up and retains the current precedence of the config requirement. The separate usage-line request is recorded in DISPUTE-1.
+
+## DECIDE-10: Accept automated coverage for the greeting scenarios
+
+- Step — Review round 2, applying the answers to ACCEPT-1 and failure:acceptance.
+- Decision — Record the reviewer's acceptance of automated coverage for the greeting scenarios. The reviewer elected to handle the independent acceptance failure personally.
+- Rationale — The reviewer's approval of the automated checks does not establish independent acceptance. The workflow setup failure remains visible.

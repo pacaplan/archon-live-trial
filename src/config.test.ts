@@ -5,9 +5,12 @@ import { join } from 'node:path';
 import { readGreeting } from './config.ts';
 import { withTempDir } from './test-fixtures.ts';
 
-test('readGreeting returns strings or undefined for a missing file', () => {
+test('readGreeting returns strings or undefined when the file or field is missing', () => {
   withTempDir((dir) => {
     const configPath = join(dir, 'greet.json');
+    expect(readGreeting(dir)).toBeUndefined();
+
+    writeFileSync(configPath, '{}');
     expect(readGreeting(dir)).toBeUndefined();
 
     writeFileSync(configPath, JSON.stringify({ greeting: 'Hi', ignored: true }));
@@ -29,7 +32,7 @@ test('readGreeting rejects malformed JSON and invalid greeting fields', () => {
       return true;
     });
 
-    for (const config of [null, {}, { greeting: 42 }]) {
+    for (const config of [null, [], { greeting: null }, { greeting: 42 }]) {
       writeFileSync(configPath, JSON.stringify(config));
       expect(() => readGreeting(dir)).toThrow('greet.json must contain a string greeting');
     }

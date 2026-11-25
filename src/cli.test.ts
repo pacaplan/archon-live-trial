@@ -4,12 +4,13 @@ import { join } from 'node:path';
 import { withTempDir } from './test-fixtures.ts';
 
 test.each([
-  ['custom', 'Hi', 'Hi, Ada!\n'],
-  ['default', undefined, 'Hello, Ada!\n'],
-])('INT-001 prints the %s greeting from the working directory', (_scenario, greeting, stdout) => {
+  ['custom greeting', { greeting: 'Hi' }, 'Hi, Ada!\n'],
+  ['default greeting', undefined, 'Hello, Ada!\n'],
+  ['default greeting for an empty config object', {}, 'Hello, Ada!\n'],
+])('INT-001 prints the %s from the working directory', (_scenario, config, stdout) => {
   withTempDir((dir) => {
-    if (greeting !== undefined) {
-      writeFileSync(join(dir, 'greet.json'), JSON.stringify({ greeting }));
+    if (config !== undefined) {
+      writeFileSync(join(dir, 'greet.json'), JSON.stringify(config));
     }
 
     const result = Bun.spawnSync([process.execPath, join(import.meta.dir, 'cli.ts'), 'Ada'], {

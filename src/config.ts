@@ -21,8 +21,13 @@ export function readGreeting(dir: string): string | undefined {
     throw new SyntaxError(`Invalid JSON in ${configPath}: ${detail}`, { cause: error });
   }
 
-  if (config && typeof config === 'object' && 'greeting' in config && typeof config.greeting === 'string') {
-    return config.greeting;
+  if (config && typeof config === 'object' && !Array.isArray(config)) {
+    if (!('greeting' in config)) {
+      return undefined;
+    }
+    if (typeof config.greeting === 'string') {
+      return config.greeting;
+    }
   }
   throw new Error('greet.json must contain a string greeting');
 }
