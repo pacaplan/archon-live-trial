@@ -22,4 +22,4 @@ The CLI SHALL print a usage line to standard error and exit 1 when no name is gi
 #### Scenario: No name
 
 - **WHEN** the user runs `greet` with no arguments
-- **THEN** the CLI prints `usage: greet <name>` to standard error and exits 1
+- **THEN** the CLI prints `usage: greet NAME` to standard error and exits 1

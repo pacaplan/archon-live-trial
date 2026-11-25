@@ -94,3 +94,22 @@
 - Step — Review round 2, applying the answers to ACCEPT-1 and failure:acceptance.
 - Decision — Record the reviewer's acceptance of automated coverage for the greeting scenarios. The reviewer elected to handle the independent acceptance failure personally.
 - Rationale — The reviewer's approval of the automated checks does not establish independent acceptance. The workflow setup failure remains visible.
+
+## DECIDE-11: Apply the approved usage-line edit
+
+- Step — Review round 4, applying the round 3 answer to DISPUTE-1.
+- Decision — Update the canonical greeting spec and CLI to print `usage: greet NAME` when no name is supplied. The diagnostic uses standard error and exit status 1.
+- Evidence — `review-round-4-cli-usage.log` and `review-round-4-greeting-spec.log`.
+
+## DECIDE-12: Follow up on invalid and unreadable config errors
+
+- Step — Review round 4, applying the answer to DECIDE-2.
+- Decision — Keep the current behavior and track the spec and regression coverage as a follow-up here.
+- Follow-up — Specify the outcomes for malformed JSON, invalid config shapes and greeting values, and read errors other than a missing file. Add CLI assertions for exit status and error output, including at least one read error.
+- Current behavior — A JSON object without a greeting uses the default, per DECIDE-8. The remaining invalid or unreadable cases fail.
+
+## DECIDE-13: Track the older greeting spec reconciliation
+
+- Step — Review round 4, applying the answer to DECIDE-1 and reaffirming DECIDE-9.
+- Decision — Keep the reconciliation as a follow-up, tracked here.
+- Follow-up — Limit the older `Hello` requirement in `openspec/specs/greeting/spec.md` to cases where the config supplies no greeting. Preserve the configured greeting rule in `openspec/specs/greeting-config/spec.md`.
