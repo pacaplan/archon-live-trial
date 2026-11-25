@@ -1,10 +1,11 @@
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
+import { resolve } from 'node:path';
 
 export function readGreeting(dir: string): string | undefined {
+  const configPath = resolve(dir, 'greet.json');
   let contents: string;
   try {
-    contents = readFileSync(join(dir, 'greet.json'), 'utf8');
+    contents = readFileSync(configPath, 'utf8');
   } catch (error) {
     if (error instanceof Error && 'code' in error && error.code === 'ENOENT') {
       return undefined;
@@ -12,7 +13,14 @@ export function readGreeting(dir: string): string | undefined {
     throw error;
   }
 
-  const config: unknown = JSON.parse(contents);
+  let config: unknown;
+  try {
+    config = JSON.parse(contents);
+  } catch (error) {
+    const detail = error instanceof Error ? error.message : String(error);
+    throw new SyntaxError(`Invalid JSON in ${configPath}: ${detail}`, { cause: error });
+  }
+
   if (config && typeof config === 'object' && 'greeting' in config && typeof config.greeting === 'string') {
     return config.greeting;
   }

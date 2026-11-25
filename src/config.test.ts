@@ -1,4 +1,5 @@
 import { expect, test } from 'bun:test';
+import assert from 'node:assert/strict';
 import { writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { readGreeting } from './config.ts';
@@ -21,7 +22,12 @@ test('readGreeting rejects malformed JSON and invalid greeting fields', () => {
   withTempDir((dir) => {
     const configPath = join(dir, 'greet.json');
     writeFileSync(configPath, '{');
-    expect(() => readGreeting(dir)).toThrow(SyntaxError);
+    assert.throws(() => readGreeting(dir), (error: unknown) => {
+      assert.ok(error instanceof SyntaxError);
+      expect(error.message).toContain(`Invalid JSON in ${configPath}`);
+      expect(error.cause).toBeInstanceOf(SyntaxError);
+      return true;
+    });
 
     for (const config of [null, {}, { greeting: 42 }]) {
       writeFileSync(configPath, JSON.stringify(config));
