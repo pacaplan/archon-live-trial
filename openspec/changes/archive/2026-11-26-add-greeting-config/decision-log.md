@@ -37,3 +37,11 @@
 - Alternatives — Propagate a parse error; ignore invalid content and use the default; reject invalid config with a different user-facing message.
 - Rationale — Observed `SyntaxError: Invalid JSON in .../greet.json: JSON Parse error: Unexpected EOF`, exit 1; this is an observation, not an oracle. Refer to `acceptance-commands/round-0/command-4.txt`.
 - What breaks if wrong — Users may see an uncaught runtime stack trace instead of a default greeting or actionable config error. Human acceptance should decide whether malformed config is defined behavior.
+
+## DECIDE-5: Review media records and command evidence
+
+Settled in review round 1
+
+- The reviewer selected retest for `failure:review-media` and confirmed the configured greeting in `acceptance-commands/round-0/command-1.txt`. The round 1 page's retest index linked no journeys to that item.
+- Rechecked the reported evidence failure with the review media loader after renaming the four journey records' repeat field to the expected `repeat` key. The loader accepted all four existing records and the saved configured-greeting command. See `evidence/review-round-2-media.log`.
+- The round 1 response retains the command evidence reference. The command output and its tested revision are preserved.
