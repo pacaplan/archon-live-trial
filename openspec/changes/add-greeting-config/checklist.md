@@ -1,0 +1,4 @@
+| ID | Behavior | Spec reference | How to verify |
+|---|---|---|---|
+| CHECK-1 | With `{"greeting":"Hi"}` in `greet.json` in the CLI's working directory, greeting Ada prints `Hi, Ada!` to stdout and exits with code 0. | `specs/greeting-config/spec.md`, “Greeting comes from greet.json” / “Custom greeting” | INT-001 custom greeting case. Run the CLI subprocess in a temporary working directory containing the config and assert stdout and exit code. |
+| CHECK-2 | With no `greet.json` in the CLI's working directory, greeting Ada prints `Hello, Ada!` to stdout and exits with code 0. | `specs/greeting-config/spec.md`, “Default greeting without the file” / “No config file” | INT-001 no config case. Run the CLI subprocess in a temporary working directory without the config and assert stdout and exit code. |
